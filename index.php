@@ -13,6 +13,47 @@ $current_ts = strtotime('now midnight'); // текущая метка време
 $date_deadline = date("d.m.Y", $task_deadline_ts);
 // в эту переменную запишите кол-во дней до даты задачи
 $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONS_IN_DAY);
+
+//массивы для вывода задач в HTML
+$projects = ['Все', 'Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
+$tasks = [
+    0 => [
+        'task' => 'Собеседование в IT компании',
+        'date' => '01.06.2018',
+        'category' => 'Работа',
+        'status' => 'Нет',
+    ],
+    1 => [
+        'task' => 'Выполнить тестовое задание',
+        'date' => '25.05.2018',
+        'category' => 'Работа',
+        'status' => 'Нет',
+    ],
+    2 => [
+        'task' => 'Сделать задание первого раздела',
+        'date' => '21.04.2018',
+        'category' => 'Учеба',
+        'status' => 'Да',
+    ],
+    3 => [
+        'task' => 'Встреча с другом',
+        'date' => '22.04.2018',
+        'category' => 'Входящие',
+        'status' => 'Нет',
+    ],
+    4 => [
+        'task' => 'Купить корм для кота',
+        'date' => 'Нет',
+        'category' => 'Домашние дела',
+        'status' => 'Нет',
+    ],
+    5 => [
+        'task' => 'Заказать пиццу',
+        'date' => 'Нет',
+        'category' => 'Домашние дела',
+        'status' => 'Нет',
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -57,30 +98,18 @@ $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONS_
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#">Входящие</a>
-                            <span class="main-navigation__list-item-count">24</span>
-                        </li>
-
-                        <li class="main-navigation__list-item main-navigation__list-item--active">
-                            <a class="main-navigation__list-item-link" href="#">Работа</a>
-                            <span class="main-navigation__list-item-count">12</span>
-                        </li>
-
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#">Здоровье</a>
-                            <span class="main-navigation__list-item-count">3</span>
-                        </li>
-
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#">Домашние дела</a>
-                            <span class="main-navigation__list-item-count">7</span>
-                        </li>
-
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#">Авто</a>
-                            <span class="main-navigation__list-item-count">0</span>
-                        </li>
+                        <?php $number_task = 0; while ($number_task < count($tasks)): ?>
+                            <li class="main-navigation__list-item
+                            <?php if ($number_task === 0): ?>
+                                main-navigation__list-item--active
+                            <?php endif; ?>">
+                                <a class="main-navigation__list-item-link" href="#">
+                                    <?= $projects[$number_task] ?>
+                                </a>
+                                <span class="main-navigation__list-item-count"></span>
+                            </li>
+                            <?php $number_task += 1; ?>
+                        <?php endwhile; ?>
                     </ul>
                 </nav>
 
@@ -119,42 +148,32 @@ $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONS_
                 </div>
 
                 <table class="tasks">
-                    <!--показывать следующий тег <tr/>, если переменная равна единице-->
-                    <?php if ($show_complete_tasks === 0) :?>
-                    <tr class="tasks__item task task--completed
-                        <?php if ($days_until_deadline <= 0): ?>
-                            task--important
-                        <? endif; ?>
+                    <?php $i = 0; while($i < count($tasks)): ?>
+                        <tr class="tasks__item task
+                        <?php if ($tasks[$i]['status'] === 'Да'): ?>
+                            task--completed
+                        <?php endif; ?>
                         ">
-                        <td class="task__select">
-                            <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden" type="checkbox" checked>
-                                <a href="/"><span class="checkbox__text">Сделать главную страницу Дела в порядке</span></a>
-                            </label>
+                            <td class="task__select">
+                                <label class="checkbox task__checkbox">
+                                    <input class="checkbox__input visually-hidden" type="checkbox">
+                                    <a href="/">
+                                        <span class="checkbox__text">
+                                            <?= $tasks[$i]['task']; ?>
+                                        </span>
+                                    </a>
+                                </label>
+                            </td>
 
-                        </td>
+                            <td class="task__file">
+                            </td>
 
-                        <td class="task__file">
-                            <a class="download-link" href="#">Home.psd</a>
-                        </td>
-
-                        <td class="task__date"><?= $date_deadline; ?><!--выведите здесь дату выполнения задачи--></td>
-                    </tr>
-                    <?php endif; ?>
-
-                    <tr class="tasks__item task">
-                        <td class="task__select">
-                            <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden" type="checkbox">
-                                <a href="/"><span class="checkbox__text">Выполнить домашнее задание</span></a>
-                            </label>
-                        </td>
-
-                        <td class="task__file">
-                        </td>
-
-                        <td class="task__date">21.03.2017</td>
-                    </tr>
+                            <td class="task__date">
+                                <?= $tasks[$i]['date']; ?>
+                            </td>
+                        </tr>
+                    <?php $i += 1; ?>
+                    <?php endwhile; ?>
                 </table>
             </main>
         </div>
