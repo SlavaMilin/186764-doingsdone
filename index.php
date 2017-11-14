@@ -17,37 +17,37 @@ $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONS_
 //массивы для вывода задач в HTML
 $projects = ['Все', 'Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 $tasks = [
-    0 => [
+    [
         'task' => 'Собеседование в IT компании',
         'date' => '01.06.2018',
         'category' => 'Работа',
         'status' => 'Нет',
     ],
-    1 => [
+    [
         'task' => 'Выполнить тестовое задание',
         'date' => '25.05.2018',
         'category' => 'Работа',
         'status' => 'Нет',
     ],
-    2 => [
+    [
         'task' => 'Сделать задание первого раздела',
         'date' => '21.04.2018',
         'category' => 'Учеба',
         'status' => 'Да',
     ],
-    3 => [
+    [
         'task' => 'Встреча с другом',
         'date' => '22.04.2018',
         'category' => 'Входящие',
         'status' => 'Нет',
     ],
-    4 => [
+    [
         'task' => 'Купить корм для кота',
         'date' => 'Нет',
         'category' => 'Домашние дела',
         'status' => 'Нет',
     ],
-    5 => [
+    [
         'task' => 'Заказать пиццу',
         'date' => 'Нет',
         'category' => 'Домашние дела',
@@ -98,18 +98,17 @@ $tasks = [
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php $number_task = 0; while ($number_task < count($tasks)): ?>
+                        <?php foreach ($projects as $key => $value): ?>
                             <li class="main-navigation__list-item
-                            <?php if ($number_task === 0): ?>
+                            <?php if ($key === 0): ?>
                                 main-navigation__list-item--active
                             <?php endif; ?>">
                                 <a class="main-navigation__list-item-link" href="#">
-                                    <?= $projects[$number_task] ?>
+                                    <?= $projects[$key] ?>
                                 </a>
                                 <span class="main-navigation__list-item-count"></span>
                             </li>
-                            <?php $number_task += 1; ?>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </ul>
                 </nav>
 
@@ -148,9 +147,9 @@ $tasks = [
                 </div>
 
                 <table class="tasks">
-                    <?php $i = 0; while($i < count($tasks)): ?>
+                    <?php foreach($tasks as $key => $value): ?>
                         <tr class="tasks__item task
-                        <?php if ($tasks[$i]['status'] === 'Да'): ?>
+                        <?php if ($tasks[$key]['status'] === 'Да'): ?>
                             task--completed
                         <?php endif; ?>
                         ">
@@ -159,7 +158,7 @@ $tasks = [
                                     <input class="checkbox__input visually-hidden" type="checkbox">
                                     <a href="/">
                                         <span class="checkbox__text">
-                                            <?= $tasks[$i]['task']; ?>
+                                            <?= $tasks[$key]['task']; ?>
                                         </span>
                                     </a>
                                 </label>
@@ -169,11 +168,10 @@ $tasks = [
                             </td>
 
                             <td class="task__date">
-                                <?= $tasks[$i]['date']; ?>
+                                <?= $tasks[$key]['date']; ?>
                             </td>
                         </tr>
-                    <?php $i += 1; ?>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </table>
             </main>
         </div>
