@@ -54,6 +54,18 @@ $tasks = [
         'status' => 'Нет',
     ],
 ];
+
+//принимает на вход данные и возвращает количество повторов в двумерном массиве
+function culc_repeat($array, $item, $category) {
+    $count = 0;
+    foreach ($array as $key => $value) {
+        if ($value[$category] === $item) {
+            $count += 1;
+        }
+    };
+    return $count;
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -104,9 +116,11 @@ $tasks = [
                                 main-navigation__list-item--active
                             <?php endif; ?>">
                                 <a class="main-navigation__list-item-link" href="#">
-                                    <?= $projects[$key] ?>
+                                    <?= $value; ?>
                                 </a>
-                                <span class="main-navigation__list-item-count"></span>
+                                <span class="main-navigation__list-item-count">
+                                    <?= culc_repeat($tasks, $value, 'category'); ?>
+                                </span>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -149,7 +163,7 @@ $tasks = [
                 <table class="tasks">
                     <?php foreach($tasks as $key => $value): ?>
                         <tr class="tasks__item task
-                        <?php if ($tasks[$key]['status'] === 'Да'): ?>
+                        <?php if ($value['status'] === 'Да'): ?>
                             task--completed
                         <?php endif; ?>
                         ">
@@ -158,7 +172,7 @@ $tasks = [
                                     <input class="checkbox__input visually-hidden" type="checkbox">
                                     <a href="/">
                                         <span class="checkbox__text">
-                                            <?= $tasks[$key]['task']; ?>
+                                            <?= $value['task']; ?>
                                         </span>
                                     </a>
                                 </label>
@@ -168,7 +182,7 @@ $tasks = [
                             </td>
 
                             <td class="task__date">
-                                <?= $tasks[$key]['date']; ?>
+                                <?= $value['date']; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
