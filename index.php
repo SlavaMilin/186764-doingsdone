@@ -56,16 +56,18 @@ $tasks = [
 ];
 
 //принимает на вход данные и возвращает количество повторов в двумерном массиве
-function culc_repeat($array, $item, $category) {
-    $count = 0;
-    foreach ($array as $key => $value) {
-        if ($value[$category] === $item) {
-            $count += 1;
-        }
-    };
-    return $count;
+function get_task_count($array, $item) {
+    $summ = 0;
+    foreach ($array as $target) {
+        if ($item === 'Все') {
+            $summ += 1;
+        } elseif ($item === $target['category']) {
+            $summ += 1;
+        };
+    }
+    return $summ;
 };
-
+echo get_task_count($tasks, 'Все');
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -119,7 +121,7 @@ function culc_repeat($array, $item, $category) {
                                     <?= $value; ?>
                                 </a>
                                 <span class="main-navigation__list-item-count">
-                                    <?= culc_repeat($tasks, $value, 'category'); ?>
+                                    <?= get_task_count($tasks, $value); ?>
                                 </span>
                             </li>
                         <?php endforeach; ?>
