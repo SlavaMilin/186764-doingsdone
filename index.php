@@ -56,18 +56,17 @@ $tasks = [
 ];
 
 //принимает на вход данные и возвращает количество повторов в двумерном массиве
-function get_task_count($array, $item) {
-    $summ = 0;
-    foreach ($array as $target) {
-        if ($item === 'Все') {
-            $summ += 1;
-        } elseif ($item === $target['category']) {
-            $summ += 1;
+function get_task_count($tasks, $categoryItem) {
+    $count = 0;
+    foreach ($tasks as $item) {
+        if ($categoryItem === 'Все') {
+            $count += 1;
+        } elseif ($categoryItem === $item['category']) {
+            $count += 1;
         };
     }
-    return $summ;
+    return $count;
 };
-echo get_task_count($tasks, 'Все');
 ?>
 <!DOCTYPE html>
 <html lang="ru">
