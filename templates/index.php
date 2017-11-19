@@ -4,11 +4,8 @@
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach ($projects as $key => $value): ?>
-                <li class="main-navigation__list-item
-                            <?php if ($key === 0): ?>
-                                main-navigation__list-item--active
-                            <?php endif; ?>">
-                    <a class="main-navigation__list-item-link" href="#">
+                <li class="main-navigation__list-item <?php if ($key === 0) echo 'main-navigation__list-item--active' ?>">
+                    <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $key;?>">
                         <?= htmlspecialchars($value); ?>
                     </a>
                     <span class="main-navigation__list-item-count">
@@ -40,7 +37,6 @@
 
         <label class="checkbox">
             <a href="/">
-                <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
                 <input class="checkbox__input visually-hidden" type="checkbox">
 
                 <span class="checkbox__text">Показывать выполненные</span>
@@ -49,25 +45,19 @@
     </div>
 
     <table class="tasks">
-        <?php foreach($tasks as $key => $value): ?>
-            <tr class="tasks__item task
-            <?php if ($value['status'] === 'Да'): ?>
-                task--completed
-            <?php endif; ?>">
+        <?php foreach(filtering_category_array($tasks, $projects, $category_page) as $key => $value): ?>
+            <tr class="tasks__item task <?php if ($value['status'] === 'Да') echo 'task--completed'?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox">
                         <a href="/">
-                            <span class="checkbox__text">
-                                <?= htmlspecialchars($value['task']); ?>
-                            </span>
+                        <span class="checkbox__text">
+                            <?= htmlspecialchars($value['task']); ?>
+                        </span>
                         </a>
                     </label>
                 </td>
-
-                <td class="task__file">
-                </td>
-
+                <td class="task__file"></td>
                 <td class="task__date">
                     <?= htmlspecialchars($value['date']); ?>
                 </td>

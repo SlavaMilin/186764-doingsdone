@@ -2,11 +2,14 @@
 define('SECONDS_IN_DAY', 86400);
 define('TEMPLATE_DIR_PATH', 'templates/');
 define('TEMPLATE_EXT', '.php');
+define('HOST_NAME', 'http://doingsdone/');
 require_once('functions.php');
 require_once('data.php');
 
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
+$category_page = null;
+if (isset($_GET['category_page'])) {
+    $category_page = +$_GET['category_page'];
+};
 
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
@@ -22,7 +25,8 @@ $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS
 
 $page_content = get_template('index', [
     'projects' => $projects,
-    'tasks' => $tasks
+    'tasks' => $tasks,
+    'category_page' => $category_page
 ]);
 $layout_content = get_template('layout', [
     'content' => $page_content,
