@@ -8,9 +8,8 @@ require_once('data.php');
 
 $category_page = null;
 if (isset($_GET['category_page'])) {
-    $category_page = +$_GET['category_page'];
+    $category_page = intval($_GET['category_page']);
 };
-
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
 

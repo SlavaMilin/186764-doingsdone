@@ -4,7 +4,7 @@
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach ($projects as $key => $value): ?>
-                <li class="main-navigation__list-item <?php if ($key === 0) echo 'main-navigation__list-item--active' ?>">
+                <li class="main-navigation__list-item <?php if ($key === $category_page) echo 'main-navigation__list-item--active' ?>">
                     <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $key;?>">
                         <?= htmlspecialchars($value); ?>
                     </a>
