@@ -26,11 +26,11 @@ function get_task_count($tasks, $category_item) {
 
 //фильтрует массив
 function filtering_category_array(array $get_tasks, array $get_projects, $page_link) {
-    if ($page_link === 0 || !$page_link) {
+    $result = [];
+    if ($page_link === 0) {
         return $get_tasks;
     };
     if (array_key_exists($page_link, $get_projects)) {
-        $result = [];
         foreach ($get_tasks as $value) {
             if ($value['category'] === $get_projects[$page_link]) {
                 array_push($result, $value);
@@ -40,4 +40,5 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
     };
     http_response_code(404);
     echo '<h2>Страница не найдена</h2>';
+    return $result;
 };
