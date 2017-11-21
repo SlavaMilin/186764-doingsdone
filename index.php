@@ -1,10 +1,15 @@
 <?php
+define('SECONDS_IN_DAY', 86400);
+define('TEMPLATE_DIR_PATH', 'templates/');
+define('TEMPLATE_EXT', '.php');
+define('HOST_NAME', 'http://doingsdone/');
 require_once('functions.php');
-define("SECONS_IN_DAY", 86400);
+require_once('data.php');
 
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
+$category_page = null;
+if (isset($_GET['category_page'])) {
+    $category_page = intval($_GET['category_page']);
+};
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
 
@@ -15,39 +20,15 @@ $current_ts = strtotime('now midnight'); // текущая метка време
 // запишите сюда дату выполнения задачи в формате дд.мм.гггг
 $date_deadline = date("d.m.Y", $task_deadline_ts);
 // в эту переменную запишите кол-во дней до даты задачи
-$days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONS_IN_DAY);
+$days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS_IN_DAY);
 
-//массивы для вывода задач в HTML
-$projects = ['Все', 'Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
-$tasks = [
-    ['task' => 'Собеседование в IT компании', 'date' => '01.06.2018', 'category' => 'Работа', 'status' => 'Нет'],
-    ['task' => 'Выполнить тестовое задание', 'date' => '25.05.2018', 'category' => 'Работа', 'status' => 'Нет'],
-    ['task' => 'Сделать задание первого раздела', 'date' => '21.04.2018', 'category' => 'Учеба', 'status' => 'Да'],
-    ['task' => 'Встреча с другом', 'date' => '22.04.2018', 'category' => 'Входящие', 'status' => 'Нет'],
-    ['task' => 'Купить корм для кота', 'date' => 'Нет', 'category' => 'Домашние дела', 'status' => 'Нет'],
-    ['task' => 'Заказать пиццу', 'date' => 'Нет', 'category' => 'Домашние дела', 'status' => 'Нет'],
-];
-
-//принимает на вход данные и возвращает количество повторов в двумерном массиве
-function get_task_count($tasks, $categoryItem) {
-    $count = 0;
-    foreach ($tasks as $item) {
-        if ($categoryItem === 'Все') {
-            $count += 1;
-        } elseif ($categoryItem === $item['category']) {
-            $count += 1;
-        };
-    }
-    return $count;
-};
-
-$page_content = get_template('templates/index.php', [
+$page_content = get_template('index', [
     'projects' => $projects,
-    'tasks' => $tasks
+    'tasks' => $tasks,
+    'category_page' => $category_page
 ]);
-$layout_content = get_template('templates/layout.php', [
+$layout_content = get_template('layout', [
     'content' => $page_content,
     'title' => 'Дела в порядке'
 ]);
 print($layout_content);
-?>
