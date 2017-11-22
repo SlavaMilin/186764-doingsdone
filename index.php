@@ -6,10 +6,43 @@ define('HOST_NAME', 'http://doingsdone/');
 require_once('functions.php');
 require_once('data.php');
 
-$category_page = null;
+$category_page = 0;
+$add_form = null;
+$modal_form = '';
+
+
 if (isset($_GET['category_page'])) {
     $category_page = intval($_GET['category_page']);
 };
+if (isset($_GET['add'])) {
+    if ($_GET['add'] === 'form') {
+        $add_form = true;
+        $modal_form = get_template('form', [
+            'projects' => $projects,
+        ]);
+    }
+};
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $get_data = $_POST;
+    $errors = [];
+    $required = ['name', 'project', 'date'];
+    foreach ($_POST as $key => $value) {
+        if (in_array($key, $required)) {
+            if (!$value) {
+                $errors[$key] = '';
+            }
+        }
+    }
+    if (count($errors)) {
+        $add_form = true;
+        $modal_form = get_template('form', [
+            'get_data' => $get_data,
+            'errors' => $errors,
+            'projects' => $projects,
+        ]);
+    }
+}
+
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
 
@@ -29,6 +62,8 @@ $page_content = get_template('index', [
 ]);
 $layout_content = get_template('layout', [
     'content' => $page_content,
-    'title' => 'Дела в порядке'
+    'title' => 'Дела в порядке',
+    'modal_form' => $modal_form,
+    'add_form' => $add_form
 ]);
 print($layout_content);
