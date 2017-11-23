@@ -58,7 +58,7 @@
                     </label>
                 </td>
                 <td class="task__file">
-                    <?php if (isset($value['preview']) and count($value['preview'])):?>
+                    <?php if (isset($value['preview']) && !empty($value['preview'])):?>
                     <a class="download-link" href="#"> <?=htmlspecialchars($value['preview']);?></a>
                     <?php endif;?>
                 </td>
