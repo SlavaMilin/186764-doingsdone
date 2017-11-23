@@ -25,13 +25,18 @@ if (isset($_GET['add'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $get_data = $_POST;
     $errors = [];
-    $required = ['name', 'project', 'date'];
+    $required = ['task', 'category'];
     foreach ($_POST as $key => $value) {
         if (in_array($key, $required)) {
             if (!$value) {
                 $errors[$key] = '';
             }
         }
+    }
+    if (isset($_FILES['preview']['name']) && !count($errors)) {
+        $path = $_FILES['preview']['name'];
+        $res = move_uploaded_file($_FILES['preview']['tmp_name'], 'uploads/' . $path);
+        $get_data['preview'] = $path;
     }
     if (count($errors)) {
         $add_form = true;
@@ -40,6 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors,
             'projects' => $projects,
         ]);
+    } else {
+        $get_data['status'] = 'Нет';
+        echo $get_data['date'];
+        if (count($get_data['date'])) {
+            $get_data['date'] = date_format(date_create($get_data['date']), 'd.m.Y');
+        } else {
+            $get_data['date'] = 'Нет';
+        }
+        array_unshift($tasks, $get_data);
     }
 }
 
@@ -51,7 +65,7 @@ $task_deadline_ts = strtotime("+" . $days . " day midnight"); // метка вр
 $current_ts = strtotime('now midnight'); // текущая метка времени
 
 // запишите сюда дату выполнения задачи в формате дд.мм.гггг
-$date_deadline = date("d.m.Y", $task_deadline_ts);
+$date_deadline = date('d.m.Y', $task_deadline_ts);
 // в эту переменную запишите кол-во дней до даты задачи
 $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS_IN_DAY);
 

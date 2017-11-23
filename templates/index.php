@@ -57,7 +57,11 @@
                         </a>
                     </label>
                 </td>
-                <td class="task__file"></td>
+                <td class="task__file">
+                    <?php if (isset($value['preview']) and count($value['preview'])):?>
+                    <a class="download-link" href="#"> <?=htmlspecialchars($value['preview']);?></a>
+                    <?php endif;?>
+                </td>
                 <td class="task__date">
                     <?= htmlspecialchars($value['date']); ?>
                 </td>

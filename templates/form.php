@@ -3,19 +3,19 @@
 
     <h2 class="modal__heading">Добавление задачи</h2>
 
-    <form class="form"  action="index.php" method="post">
+    <form class="form" action="index.php" method="post" enctype="multipart/form-data">
         <div class="form__row">
-            <label class="form__label" for="name">Название <sup>*</sup></label>
-            <?php if (isset($errors['name'])) echo '<br><span style="color:red">Заполните это поле</span>'?>
-            <input class="form__input <?php if (isset($errors['name'])) echo 'form__input--error'?>" type="text" name="name" id="name" value="<?php if (isset($get_data)) echo $get_data['name'];?>" placeholder="Введите название">
+            <label class="form__label" for="task">Название <sup>*</sup></label>
+            <?php if (isset($errors['task'])) {echo '<p class="form__message">Заполните это поле</p>';}?>
+            <input class="form__input <?php if (isset($errors['task'])) {echo 'form__input--error';};?>" type="text" name="task" id="task" value="<?php if (isset($get_data)) {echo $get_data['task'];};?>" placeholder="Введите название">
         </div>
 
         <div class="form__row">
-            <label class="form__label" for="project">Проект <sup>*</sup></label>
-
-            <select class="form__input form__input--select" name="project" id="project">
-                <?php foreach ($projects as $value): ?>
-                <?php if ($value === 'Все') continue; ?>
+            <label class="form__label" for="category">Проект <sup>*</sup></label>
+            <?php if (isset($errors['category'])) {echo '<p class="form__message">Заполните это поле</p>';}?>
+            <select class="form__input form__input--select <?php if (isset($errors['category'])) {echo 'form__input--error';};?>" name="category" id="category">
+                <?php foreach ($projects as $key => $value): ?>
+                <?php if ($key === 0) {continue;}; ?>
                 <option value="<?=$value; ?>"><?=$value; ?></option>
                 <?php endforeach; ?>
             </select>
@@ -23,8 +23,7 @@
 
         <div class="form__row">
             <label class="form__label" for="date">Дата выполнения</label>
-            <?php if (isset($errors['date'])) echo '<br><span style="color:red">Заполните это поле</span>'?>
-            <input class="form__input form__input--date <?php if (isset($errors['date'])) echo 'form__input--error'?>" type="date" name="date" id="date" value="<?php if (isset($get_data)) echo $get_data['date'];?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
+            <input class="form__input form__input--date" type="date" name="date" id="date" value="<?php if (isset($get_data)) echo $get_data['date'];?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
         </div>
 
         <div class="form__row">
