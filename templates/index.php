@@ -53,7 +53,7 @@
     </div>
 
     <table class="tasks">
-        <?php foreach(filtering_category_array($tasks, $projects, $category_page) as $key => $value): ?>
+        <?php foreach(show_complete_task(filtering_category_array($tasks, $projects, $category_page)) as $key => $value): ?>
             <tr class="tasks__item task <?php if ($value['status'] === 'Да') echo 'task--completed'?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">

@@ -36,16 +36,20 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
                 array_push($result, $value);
             }
         };
-        if ($_COOKIE['show_completed'] === '1') {
-            foreach ($result as $key => $value) {
-                if ($key['status'] === 'Да') {
-                    unset($result[$key]);
-                }
-            }
-        }
         return $result;
     };
     http_response_code(404);
     echo '<h2>Страница не найдена</h2>';
     return $result;
+};
+
+function show_complete_task($get_task) {
+    if ($_COOKIE['show_completed'] === '1' && is_array($get_task)) {
+        foreach ($get_task as $key => $value) {
+            if ($value['status'] === 'Да') {
+                unset($get_task[$key]);
+            }
+        }
+    }
+    return $get_task;
 };
