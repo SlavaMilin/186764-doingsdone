@@ -36,6 +36,13 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
                 array_push($result, $value);
             }
         };
+        if ($_COOKIE['show_completed'] === '1') {
+            foreach ($result as $key => $value) {
+                if ($key['status'] === 'Да') {
+                    unset($result[$key]);
+                }
+            }
+        }
         return $result;
     };
     http_response_code(404);
