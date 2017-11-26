@@ -40,7 +40,7 @@
                 isset($_COOKIE['show_completed']) ? print((int)!(bool) $_COOKIE['show_completed']) : print(1);
             ?>">
                 <input class="checkbox__input visually-hidden" type="checkbox" <?php
-                if ($_COOKIE['show_completed'] ? (bool) $_COOKIE['show_completed'] : false) {echo 'checked';};
+                if (isset($_COOKIE['show_completed']) ? (bool) $_COOKIE['show_completed'] : false) {echo 'checked';};
                 ?>>
 
                 <span class="checkbox__text">Показывать выполненные</span>
