@@ -36,8 +36,12 @@
         </nav>
 
         <label class="checkbox">
-            <a href="/">
-                <input class="checkbox__input visually-hidden" type="checkbox">
+            <a href="index.php?show_completed=<?php
+                isset($_COOKIE['show_completed']) ? print((int)!(bool) $_COOKIE['show_completed']) : print(1);
+            ?>">
+                <input class="checkbox__input visually-hidden" type="checkbox" <?php
+                if (isset($_COOKIE['show_completed']) ? (bool) $_COOKIE['show_completed'] : false) {echo 'checked';};
+                ?>>
 
                 <span class="checkbox__text">Показывать выполненные</span>
             </a>
@@ -45,7 +49,7 @@
     </div>
 
     <table class="tasks">
-        <?php foreach(filtering_category_array($tasks, $projects, $category_page) as $key => $value): ?>
+        <?php foreach(show_complete_task(filtering_category_array($tasks, $projects, $category_page)) as $key => $value): ?>
             <tr class="tasks__item task <?php if ($value['status'] === 'Да') echo 'task--completed'?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">

@@ -42,3 +42,12 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
     echo '<h2>Страница не найдена</h2>';
     return $result;
 };
+
+function show_complete_task($get_task) {
+    if (isset($_COOKIE['show_completed']) ? (!(bool) $_COOKIE['show_completed']) : true && is_array($get_task)) {
+        return array_filter($get_task, function($value) {
+            return ($value['status'] === 'Нет');
+        });
+    }
+    return $get_task;
+};
