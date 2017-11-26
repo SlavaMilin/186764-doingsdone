@@ -37,14 +37,10 @@
 
         <label class="checkbox">
             <a href="index.php?show_completed=<?php
-            if (isset($_COOKIE['show_completed'])) {
-                $_COOKIE['show_completed'] === '0' ? print(1) : print(0);
-            } else {
-                print(0);
-            }
+                isset($_COOKIE['show_completed']) ? print((int)!(bool) $_COOKIE['show_completed']) : print(1);
             ?>">
                 <input class="checkbox__input visually-hidden" type="checkbox" <?php
-                if ($_COOKIE['show_completed'] === '0') {echo 'checked';};
+                if ($_COOKIE['show_completed'] ? (bool) $_COOKIE['show_completed'] : false) {echo 'checked';};
                 ?>>
 
                 <span class="checkbox__text">Показывать выполненные</span>

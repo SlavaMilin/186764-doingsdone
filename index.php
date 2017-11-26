@@ -67,7 +67,7 @@ if (isset($_GET['show_completed'])) {
     $show_completed = $_GET['show_completed'];
     setcookie('show_completed', $show_completed, strtotime('+30 days'));
     header('Location: /');
-};
+}
 
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');

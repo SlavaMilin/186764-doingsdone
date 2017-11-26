@@ -44,12 +44,10 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
 };
 
 function show_complete_task($get_task) {
-    if ($_COOKIE['show_completed'] === '1' && is_array($get_task)) {
-        foreach ($get_task as $key => $value) {
-            if ($value['status'] === 'Да') {
-                unset($get_task[$key]);
-            }
-        }
+    if (isset($_COOKIE['show_completed']) ? (!(bool) $_COOKIE['show_completed']) : false && is_array($get_task)) {
+        return array_filter($get_task, function($value) {
+            return ($value['status'] === 'Нет');
+        });
     }
     return $get_task;
 };
