@@ -3,44 +3,42 @@
 
 <head>
     <meta charset="UTF-8">
-    <title><?=htmlspecialchars($title);?></title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body class="<?php
-    if($add_form || $add_login) {
-        echo 'overlay';
-    };
+<body class="body-background <?php
+if($add_login) {
+    echo 'overlay';
+};
 ?>">
 <h1 class="visually-hidden">Дела в порядке</h1>
 
 <div class="page-wrapper">
-    <div class="container container--with-sidebar">
+    <div class="container">
         <header class="main-header">
             <a href="#">
-                <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
+                <img src="../img/logo.png" width="153" height="42" alt="Логитип Дела в порядке">
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--plus" href="index.php?add=form">Добавить задачу</a>
-
-                <div class="main-header__side-item user-menu">
-                    <div class="user-menu__image">
-                        <img src="img/user-pic.jpg" width="40" height="40" alt="Пользователь">
-                    </div>
-
-                    <div class="user-menu__data">
-                        <p>Константин</p>
-
-                        <a href="logout.php">Выйти</a>
-                    </div>
-                </div>
+                <a class="main-header__side-item button button--transparent" href="?login">Войти</a>
             </div>
         </header>
 
         <div class="content">
-            <?=$content;?>
+            <section class="welcome">
+                <h2 class="welcome__heading">«Дела в порядке»</h2>
+
+                <div class="welcome__text">
+                    <p>«Дела в порядке» — это веб приложение для удобного ведения списка дел. Сервис помогает пользователям не забывать о предстоящих важных событиях и задачах.</p>
+
+                    <p>После создания аккаунта, пользователь может начать вносить свои дела, деля их по проектам и указывая сроки.</p>
+                </div>
+
+                <a class="welcome__button button" href="#">Зарегистрироваться</a>
+            </section>
         </div>
     </div>
 </div>
@@ -78,14 +76,12 @@
             <span class="visually-hidden">Разработано:</span>
 
             <a href="https://htmlacademy.ru/intensive/php">
-                <img src="img/htmlacademy.svg" alt="HTML Academy" width="118" height="40">
+                <img src="../img/htmlacademy.svg" alt="HTML Academy" width="118" height="40">
             </a>
         </div>
     </div>
 </footer>
 
-<?=$modal_form; ?>
 <?=$modal_login; ?>
-
 </body>
 </html>

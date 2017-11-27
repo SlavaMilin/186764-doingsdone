@@ -6,11 +6,15 @@ define('TEMPLATE_EXT', '.php');
 define('HOST_NAME', 'http://doingsdone/');
 require_once('functions.php');
 require_once('data.php');
+require_once ('userdata.php');
+
+session_start();
 
 $category_page = 0;
 $add_form = null;
+$add_login = null;
 $modal_form = '';
-
+$modal_login = '';
 
 //Считывает параметр запроса category_page и передаёт её параметр для переключения категорий
 
@@ -29,9 +33,16 @@ if (isset($_GET['add'])) {
     }
 };
 
+//Включает отображение попапа логина при параметре запроса get=login
+
+if (isset($_GET['login'])) {
+    $add_login = true;
+    $modal_login = get_template('login', []);
+}
+
 //При получении данных из формы производит валидацию. Если проходит валидацию добавляет задачу, если нет выводит ошибки
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'form') {
     $get_data = $_POST;
     $errors = [];
     $required = ['task', 'category'];
@@ -63,11 +74,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'login') {
+    $get_data = $_POST;
+    $errors = [];
+    $required = ['email', 'password'];
+
+    foreach ($required as $value) {
+        if (!array_key_exists($value, $get_data) || empty($get_data[$value])) {
+            $errors[$value] = true;
+        }
+    }
+    $user = searchUserByEmail($get_data['email'], $users);
+    if ($user) {
+        if (password_verify($get_data['password'], $user['password'])) {
+            $_SESSION['user'] = $user;
+        } else {
+            $errors['password'] = true;
+        }
+    } else {
+        $errors['email'] = true;
+    }
+
+    if (empty($errors)) {
+        header('Location: index.php');
+    } else {
+        $add_login = true;
+        $modal_login = get_template('login', [
+            'errors' => $errors,
+        ]);
+    }
+}
+
+// при параметре запросе show_completed устанавливает куки равные значению запроса
+
 if (isset($_GET['show_completed'])) {
     $show_completed = $_GET['show_completed'];
     setcookie('show_completed', $show_completed, strtotime('+30 days'));
     header('Location: /');
-}
+};
 
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
@@ -81,15 +125,27 @@ $date_deadline = date('d.m.Y', $task_deadline_ts);
 // в эту переменную запишите кол-во дней до даты задачи
 $days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS_IN_DAY);
 
-$page_content = get_template('index', [
-    'projects' => $projects,
-    'tasks' => $tasks,
-    'category_page' => $category_page
-]);
-$layout_content = get_template('layout', [
-    'content' => $page_content,
-    'title' => 'Дела в порядке',
-    'modal_form' => $modal_form,
-    'add_form' => $add_form
-]);
-print($layout_content);
+if (isset($_SESSION['user'])) {
+    $page_content = get_template('index', [
+        'projects' => $projects,
+        'tasks' => $tasks,
+        'category_page' => $category_page
+    ]);
+    $layout_content = get_template('layout', [
+        'content' => $page_content,
+        'title' => 'Дела в порядке',
+        'modal_form' => $modal_form,
+        'modal_login' => $modal_login,
+        'add_form' => $add_form,
+        'add_login' => $add_login
+    ]);
+    print($layout_content);
+} else {
+    $page_content = get_template('guest', [
+        'modal_login' => $modal_login,
+        'add_login' => $add_login
+    ]);
+    print($page_content);
+}
+
+

@@ -1,4 +1,5 @@
 <?php
+
 //Возвращает html шаблон с заполненными значениями из массива.
 function get_template(string $file_way, array $data) {
     if (file_exists(TEMPLATE_DIR_PATH . $file_way . TEMPLATE_EXT)) {
@@ -50,4 +51,15 @@ function show_complete_task($get_task) {
         });
     }
     return $get_task;
+};
+
+function searchUserByEmail ($email, $users) {
+    foreach ($users as $value) {
+        $result = null;
+        if ($value['email'] === $email) {
+            $result = $value;
+            break;
+        }
+    }
+    return $result;
 };
