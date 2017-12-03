@@ -1,3 +1,6 @@
+CREATE DATABASE doingsdone;
+USE doingsdone;
+
 CREATE TABLE projects (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	project_name CHAR(128),
