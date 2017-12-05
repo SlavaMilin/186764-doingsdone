@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 	task_id INT AUTO_INCREMENT PRIMARY KEY,
 	task VARCHAR(128) NOT NULL,
 	date_start DATETIME,
-	date_finish DATETIME,
-	date_deadline DATETIME,
+	date_finish DATE,
+	date_deadline DATE,
 	file_link VARCHAR(128),
 	user_id INT,
 	project_id INT NOT NULL
