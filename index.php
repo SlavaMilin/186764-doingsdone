@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 define('SECONDS_IN_DAY', 86400);
 define('TEMPLATE_DIR_PATH', 'templates/');
 define('UPLOAD_DIR_PATH', 'uploads/');
@@ -7,8 +9,7 @@ define('HOST_NAME', 'http://doingsdone/');
 require_once('functions.php');
 require_once('data.php');
 require_once ('userdata.php');
-
-session_start();
+require_once ('init.php');
 
 $category_page = 0;
 $add_form = null;
