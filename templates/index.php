@@ -3,13 +3,13 @@
 
     <nav class="main-navigation">
         <ul class="main-navigation__list">
-            <?php foreach ($projects as $key => $value): ?>
-                <li class="main-navigation__list-item <?php if ($key === $category_page) echo 'main-navigation__list-item--active' ?>">
-                    <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $key;?>">
-                        <?= htmlspecialchars($value); ?>
+            <?php foreach ($projects as $value): ?>
+                <li class="main-navigation__list-item <?php if (intval($value['project_id']) === $category_page) echo 'main-navigation__list-item--active' ?>">
+                    <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $value['project_id'];?>">
+                        <?= htmlspecialchars($value['project_name']); ?>
                     </a>
                     <span class="main-navigation__list-item-count">
-                        <?= htmlspecialchars(get_task_count($tasks, $value)); ?>
+                        <?= htmlspecialchars(get_task_count($tasks, $value['project_name'])); ?>
                     </span>
                 </li>
             <?php endforeach; ?>
@@ -56,18 +56,22 @@
                         <input class="checkbox__input visually-hidden" type="checkbox">
                         <a href="/">
                         <span class="checkbox__text">
+                            <?php if ($value['task']) :?>
                             <?= htmlspecialchars($value['task']); ?>
+                            <?php endif; ?>
                         </span>
                         </a>
                     </label>
                 </td>
                 <td class="task__file">
-                    <?php if (isset($value['preview']) && !empty($value['preview'])):?>
-                    <a class="download-link" href="#"> <?=htmlspecialchars($value['preview']);?></a>
+                    <?php if ($value['file_link']):?>
+                        <a class="download-link" href="#"> <?=htmlspecialchars($value['file_link']);?></a>
                     <?php endif;?>
                 </td>
                 <td class="task__date">
-                    <?= htmlspecialchars($value['date']); ?>
+                    <?php if ($value['date_deadline']) : ?>
+                        <?= htmlspecialchars(date('d.m.Y', strtotime($value['date_deadline']))); ?>
+                    <? endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

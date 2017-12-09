@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 //Возвращает html шаблон с заполненными значениями из массива.
 function get_template(string $file_way, array $data) {
     if (file_exists(TEMPLATE_DIR_PATH . $file_way . TEMPLATE_EXT)) {
@@ -18,7 +18,7 @@ function get_task_count($tasks, $category_item) {
         return count($tasks);
     }
     foreach ($tasks as $item) {
-        if ($category_item === $item['category']) {
+        if ($category_item === $item['project_name']) {
             $count += 1;
         };
     };
@@ -28,12 +28,12 @@ function get_task_count($tasks, $category_item) {
 //фильтрует массив
 function filtering_category_array(array $get_tasks, array $get_projects, $page_link) {
     $result = [];
-    if ($page_link === 0) {
+    if ($page_link === 1) {
         return $get_tasks;
     };
-    if (array_key_exists($page_link, $get_projects)) {
+    if (array_key_exists(intval($page_link - 1), $get_projects)) {
         foreach ($get_tasks as $value) {
-            if ($value['category'] === $get_projects[$page_link]) {
+            if ($value['project_name'] === $get_projects[$page_link - 1]['project_name']) {
                 array_push($result, $value);
             }
         };
@@ -61,5 +61,45 @@ function searchUserByEmail ($email, $users) {
             break;
         }
     }
+    return $result;
+};
+
+//function db_select ($table, array $fields, $filter, $order) {
+//    $fields_result = '';
+//    foreach ($fields as $key => $value) {
+//        if (count($fields) === 1) {
+//            $fields_result = $value;
+//            break;
+//        } elseif ($key === count($fields) - 1) {
+//            $fields_result .= $value;
+//        } else {
+//            $fields_result .= $value . ', ';
+//        }
+//    }
+//    $filter = empty($filter) ? '' : ' WHERE ' . $filter;
+//    $order = empty($order) ? '' :
+//    return 'SELECT ' . $fields_result . ' FROM ' . $table . $filter;
+//}
+
+function getSqlData($connect, $query) {
+    $result_array = mysqli_query($connect, $query);
+      return $result_array ? mysqli_fetch_all($result_array, MYSQLI_ASSOC) : $result_array;
+};
+
+function getSqlError($link) {
+    $page_error = mysqli_error($link);
+    $error_layout = get_template('error', [
+        'page_error' => $page_error
+    ]);
+    return print($error_layout);
+}
+
+function validateForm ($get_data, $get_required) {
+    $result = [];
+    foreach ($get_required as $value) {
+        if (empty($get_data[$value])) {
+            array_push($result, $value);
+        }
+    };
     return $result;
 };

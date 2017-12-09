@@ -1,22 +1,21 @@
 <?php
-session_start();
-
-define('SECONDS_IN_DAY', 86400);
-define('TEMPLATE_DIR_PATH', 'templates/');
-define('UPLOAD_DIR_PATH', 'uploads/');
-define('TEMPLATE_EXT', '.php');
-define('HOST_NAME', 'http://doingsdone/');
+require_once('config/config.php');
 require_once('functions.php');
-require_once('data.php');
 require_once ('userdata.php');
 require_once ('init.php');
 
-$category_page = 0;
+$category_page = 1;
 $add_form = null;
 $add_login = null;
 $modal_form = '';
 $modal_login = '';
 
+$projects = getSqlData($db_connect, 'SELECT project_id, project_name FROM projects');
+$tasks = getSqlData($db_connect, 'SELECT task, date_deadline, project_name FROM tasks JOIN projects ON projects.project_id = tasks.project_id');
+if (!$projects || ! $tasks) {
+    getSqlError($db_connect);
+    exit();
+}
 //Считывает параметр запроса category_page и передаёт её параметр для переключения категорий
 
 if (isset($_GET['category_page'])) {
