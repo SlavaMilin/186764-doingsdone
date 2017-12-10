@@ -33,26 +33,38 @@
                     <div class="form__row">
                         <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
-                        <input class="form__input form__input--error" type="text" name="email" id="email" value="" placeholder="Введите e-mail">
-
+                        <input class="form__input <?php if(isset($error['email'])) {print('form__input--error');} ?>" type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {
+                            print(htmlspecialchars($get_data['email']));
+                        }?>" placeholder="Введите e-mail">
+                        <?php if (isset($error['email'])):?>
                         <p class="form__message">E-mail введён некорректно</p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form__row">
                         <label class="form__label" for="password">Пароль <sup>*</sup></label>
 
-                        <input class="form__input" type="password" name="password" id="password" value="" placeholder="Введите пароль">
+                        <input class="form__input <?php if(isset($error['password'])) {print('form__input--error');} ?>" type="password" name="password" id="password" value="" placeholder="Введите пароль">
+                        <?php if (isset($error['password'])):?>
+                            <p class="form__message">Пароль введён некорректно</p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form__row">
                         <label class="form__label" for="name">Имя <sup>*</sup></label>
 
-                        <input class="form__input" type="password" name="name" id="name" value="" placeholder="Введите пароль">
+                        <input class="form__input <?php if(isset($error['name'])) {print('form__input--error');} ?>" type="text" name="name" id="name" value="<?php if (isset($get_data['name'])) {
+                            print(htmlspecialchars($get_data['name']));
+                        }?>" placeholder="Введите имя">
+                        <?php if (isset($error['name'])):?>
+                            <p class="form__message">Имя введёно некорректно</p>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form__row form__row--controls">
+                        <?php if (isset($error)): ?>
                         <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
-
+                        <?php endif; ?>
                         <input class="button" type="submit" name="" value="Зарегистрироваться">
                     </div>
                 </form>

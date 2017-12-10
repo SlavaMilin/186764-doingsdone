@@ -98,7 +98,7 @@ function validateForm ($get_data, $get_required) {
     $result = [];
     foreach ($get_required as $value) {
         if (empty($get_data[$value])) {
-            array_push($result, $value);
+            $result[$value] = true;
         }
     };
     return $result;
