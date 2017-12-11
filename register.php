@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
     }
     if (empty($error)) {
         $get_data['password'] = password_hash($get_data['password'], PASSWORD_BCRYPT);
-        $get_data['date_registration'] = date('Y-m-d H:i:s', strtotime("now"));
+        $get_data['date_registration'] = date_now_sql();
         $res = db_insert($db_connect, 'users', $get_data);
         if ($res) {
             header('Location: index.php?login');

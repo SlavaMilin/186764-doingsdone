@@ -23,7 +23,7 @@
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--plus" href="index.php?add=form">Добавить задачу</a>
+                <a class="main-header__side-item button button--plus" href="index.php?form">Добавить задачу</a>
 
                 <div class="main-header__side-item user-menu">
                     <div class="user-menu__image">

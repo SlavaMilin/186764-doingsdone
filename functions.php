@@ -164,3 +164,10 @@ function get_save_content_for_array($arr) {
     }, $arr);
     return $result;
 }
+
+/**Возвращает текущую дату формата SQL
+ * @return false|string
+ */
+function date_now_sql () {
+    return date('Y-m-d H:i:s', strtotime("now"));
+}

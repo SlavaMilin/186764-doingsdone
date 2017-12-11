@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 	date_finish DATETIME,
 	date_deadline DATETIME,
 	file_link VARCHAR(128),
+	status TINYINT,
 	user_id INT,
 	project_id INT NOT NULL
 ) ENGINE = INNODB CHARACTER SET=utf8;

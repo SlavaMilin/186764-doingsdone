@@ -11,7 +11,7 @@
             if (isset($errors['email'])) {
                 print('--error');
             }
-            ?>"type="text" name="email" id="email" value="" placeholder="Введите e-mail">
+            ?>"type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {print($get_data['email']);} ?>" placeholder="Введите e-mail">
 
             <?php
                 if (isset($errors['email'])) {

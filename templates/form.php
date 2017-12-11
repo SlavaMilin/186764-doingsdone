@@ -3,7 +3,7 @@
 
     <h2 class="modal__heading">Добавление задачи</h2>
 
-    <form class="form" action="index.php?action=form" method="post" enctype="multipart/form-data">
+    <form class="form" action="index.php?form" method="post" enctype="multipart/form-data">
         <div class="form__row">
             <label class="form__label" for="task">Название <sup>*</sup></label>
             <?php if (isset($errors['task'])) {echo '<p class="form__message">Заполните это поле</p>';}?>
@@ -16,7 +16,7 @@
             <select class="form__input form__input--select <?php if (isset($errors['category'])) {echo 'form__input--error';};?>" name="category" id="category">
                 <?php foreach ($projects as $key => $value): ?>
                 <?php if ($key === 0) {continue;}; ?>
-                <option value="<?=$value; ?>"><?=$value; ?></option>
+                <option value="<?=$value['project_name']; ?>"><?=$value['project_name']; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

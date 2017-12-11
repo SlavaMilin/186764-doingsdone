@@ -1,7 +1,6 @@
 <?php
 require_once('config/config.php');
-require_once('functions.php');
-require_once ('userdata.php');
+require_once ('functions.php');
 require_once ('init.php');
 
 $category_page = 1;
@@ -19,17 +18,15 @@ if (isset($_GET['category_page'])) {
 
 //Включает отображение попапа формы при параметре запроса get=form
 
-if (isset($_GET['add'])) {
-    if ($_GET['add'] === 'form') {
-        $modal_form = get_template('form', [
-            'projects' => $projects,
-        ]);
-    }
+if (isset($_GET['form']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $modal_form = get_template('form', [
+        'projects' => $projects,
+    ]);
 };
 
 //Включает отображение попапа логина при параметре запроса get=login
 
-if (isset($_GET['login'])) {
+if (isset($_GET['login']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $modal_login = get_template('login', []);
 }
 
@@ -37,13 +34,9 @@ if (isset($_GET['login'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
     $get_data = $_POST;
-    $errors = [];
     $required = ['task', 'category'];
-    foreach ($required as $value) {
-        if (!array_key_exists($value, $get_data) || empty($get_data[$value])) {
-            $errors[$value] = true;
-        }
-    }
+    $errors = validateForm($get_data, $required);
+
     if (isset($_FILES['preview']['name']) && empty($errors)) {
         $path = $_FILES['preview']['name'];
         $res = move_uploaded_file($_FILES['preview']['tmp_name'], UPLOAD_DIR_PATH . $path);
@@ -57,12 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
         ]);
     } else {
         $get_data['status'] = 'Нет';
-        if (empty($get_data['date'])) {
-            $get_data['date'] = 'Нет';
+        if (empty($get_data['date_deadline'])) {
+            $get_data['date_deadline'] = NULL;
         } else {
-            $get_data['date'] = date_format(date_create($get_data['date']), 'd.m.Y');
+            $get_data['date_deadline'] = date_format(date_create($get_data['date_deadline']), 'Y-m-d');
         }
-        array_unshift($tasks, $get_data);
+        $get_data['date_start'] = date_now_sql();
+//        db_insert($db_connect, 'tasks', $get_data);
     }
 }
 
@@ -86,7 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['login'])) {
         header('Location: index.php');
     } else {
         $modal_login = get_template('login', [
-            'errors' => $errors
+            'errors' => $errors,
+            'get_data' => $get_data
         ]);
     }
 }
@@ -98,15 +93,6 @@ if (isset($_GET['show_completed'])) {
     setcookie('show_completed', $show_completed, strtotime('+30 days'));
     header('Location: /');
 };
-
-$days = rand(-3, 3);
-$task_deadline_ts = strtotime("+" . $days . " day midnight"); // метка времени даты выполнения задачи
-
-
-// запишите сюда дату выполнения задачи в формате дд.мм.гггг
-$date_deadline = date('d.m.Y', $task_deadline_ts);
-// в эту переменную запишите кол-во дней до даты задачи
-$days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS_IN_DAY);
 
 if (isset($_SESSION['user'])) {
     $page_content = get_template('index', [

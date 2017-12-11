@@ -23,7 +23,7 @@ if(isset($_GET['login'])) {
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--transparent" href="?login">Войти</a>
+                <a class="main-header__side-item button button--transparent" href="index.php?login">Войти</a>
             </div>
         </header>
 
