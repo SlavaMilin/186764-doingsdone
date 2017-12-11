@@ -9,7 +9,7 @@
 </head>
 
 <body class="<?php
-    if($add_form || $add_login) {
+    if(isset($_GET['form']) || isset($_GET['login'])) {
         echo 'overlay';
     };
 ?>">

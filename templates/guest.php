@@ -9,7 +9,7 @@
 </head>
 
 <body class="body-background <?php
-if($add_login) {
+if(isset($_GET['login'])) {
     echo 'overlay';
 };
 ?>">
@@ -81,7 +81,7 @@ if($add_login) {
         </div>
     </div>
 </footer>
-<?php if (isset($modal_login)): ?>
+<?php if (isset($_GET['login'])): ?>
     <?=$modal_login; ?>
 <? endif;?>
 </body>

@@ -51,12 +51,12 @@
                     </div>
 
                     <div class="form__row">
-                        <label class="form__label" for="name">Имя <sup>*</sup></label>
+                        <label class="form__label" for="user_name">Имя <sup>*</sup></label>
 
-                        <input class="form__input <?php if(isset($error['name'])) {print('form__input--error');} ?>" type="text" name="name" id="name" value="<?php if (isset($get_data['name'])) {
-                            print(htmlspecialchars($get_data['name']));
+                        <input class="form__input <?php if(isset($error['user_name'])) {print('form__input--error');} ?>" type="text" name="user_name" id="user_name" value="<?php if (isset($get_data['user_name'])) {
+                            print(htmlspecialchars($get_data['user_name']));
                         }?>" placeholder="Введите имя">
-                        <?php if (isset($error['name'])):?>
+                        <?php if (isset($error['user_name'])):?>
                             <p class="form__message">Имя введёно некорректно</p>
                         <?php endif; ?>
                     </div>
