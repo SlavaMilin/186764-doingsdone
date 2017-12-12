@@ -6,6 +6,7 @@ require_once ('init.php');
 $category_page = 1;
 $modal_form = '';
 $modal_login = '';
+$user_name = $_SESSION['user_name'];
 
 $projects = get_projects($db_connect);
 $tasks = get_tasks($db_connect, $_SESSION['user_id']);
@@ -71,8 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['login'])) {
 
     if ($user) {
         if (check_password($db_connect, $get_data['email'], $get_data['password'])) {
+            $user_data = get_users_data($db_connect, $get_data['email']);
             $_SESSION['user'] = $get_data['email'];
-            $_SESSION['user_id'] = get_users_data($db_connect, $_SESSION['user'])[0]['user_id'];
+            $_SESSION['user_id'] = $user_data[0]['user_id'];
+            $_SESSION['user_name'] = $user_data[0]['user_name'];
         } else {
             $errors['password'] = true;
         }
@@ -107,6 +110,7 @@ if (isset($_SESSION['user'])) {
     $layout_content = get_template('layout', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
+        'user_name' => $user_name,
         'modal_form' => $modal_form,
         'modal_login' => $modal_login
     ]);

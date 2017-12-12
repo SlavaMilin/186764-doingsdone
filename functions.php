@@ -176,7 +176,7 @@ function date_now_sql () {
 
 function get_users_data ($connect, $email) {
     $query = '
-        SELECT user_id FROM users
+        SELECT user_id, user_name FROM users
         WHERE email = ?
     ';
     return db_select($connect, $query, [$email]);
