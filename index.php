@@ -6,7 +6,7 @@ require_once ('init.php');
 $category_page = 1;
 $modal_form = '';
 $modal_login = '';
-$user_name = $_SESSION['user_name'];
+
 
 $projects = get_projects($db_connect);
 $tasks = get_tasks($db_connect, $_SESSION['user_id']);
@@ -64,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
     }
 }
 
+//Валидирует данные авторизации и открывает сессию после входа
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['login'])) {
     $get_data = $_POST;
     $required = ['email', 'password'];
@@ -101,6 +103,21 @@ if (isset($_GET['show_completed'])) {
     header('Location: /');
 };
 
+if (isset($_GET['finish_task']) && isset($_GET['key'])) {
+    $num_task = (int) $_GET['finish_task'];
+    $key = (int) $_GET['key'];
+
+    if ($tasks[$key]['date_finish'] === null) {
+        $result = update_date_finish($db_connect, date_now_sql(), $num_task);
+        header('Location: index.php');
+    } else {
+        $result = update_date_finish_null($db_connect, $num_task);
+        header('Location: /');
+    }
+}
+
+//выводет отображение страниц для пользователя или гостя
+
 if (isset($_SESSION['user'])) {
     $page_content = get_template('index', [
         'projects' => $projects,
@@ -110,7 +127,7 @@ if (isset($_SESSION['user'])) {
     $layout_content = get_template('layout', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
-        'user_name' => $user_name,
+        'user_name' => $_SESSION['user_name'],
         'modal_form' => $modal_form,
         'modal_login' => $modal_login
     ]);

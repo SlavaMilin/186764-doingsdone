@@ -1,8 +1,13 @@
 <?php
 session_start();
 require_once ('db_functions.php');
-//Возвращает html шаблон с заполненными значениями из массива.
-function get_template(string $file_way, array $data) {
+
+/**Функция шаблонизации
+ * @param $file_way string путь до шаблона
+ * @param $data array переменные с данными
+ * @return string возвращает шаблон с подставленными значениями
+ */
+function get_template($file_way, $data) {
     if (file_exists(TEMPLATE_DIR_PATH . $file_way . TEMPLATE_EXT)) {
         extract($data);
         ob_start();
@@ -12,7 +17,11 @@ function get_template(string $file_way, array $data) {
     return '';
 };
 
-//принимает на вход данные и возвращает количество повторов в двумерном массиве
+/**Возарщает количество задач по категории
+ * @param $tasks array задачи
+ * @param $category_item string категория
+ * @return int сумма
+ */
 function get_task_count($tasks, $category_item) {
     $count = 0;
     if ($category_item === 'Все') {
@@ -26,7 +35,12 @@ function get_task_count($tasks, $category_item) {
     return $count;
 };
 
-//фильтрует массив
+/**Фильтрует массив задач по совпадению id категории
+ * @param $get_tasks array все задачи
+ * @param $get_projects array все категории
+ * @param $page_link integer id задачи
+ * @return array
+ */
 function filtering_category_array(array $get_tasks, array $get_projects, $page_link) {
     $result = [];
     if ($page_link === 1) {
@@ -45,29 +59,21 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
     return $result;
 };
 
+/**Фильтрует задачи по статусу выполнения
+ * @param $get_task
+ * @return array
+ */
 function show_complete_task($get_task) {
     if (isset($_COOKIE['show_completed']) ? (!(bool) $_COOKIE['show_completed']) : true && is_array($get_task)) {
         return array_filter($get_task, function($value) {
-            return ($value['status'] === 'Нет');
+            return !isset($value['date_finish']);
         });
     }
     return $get_task;
 };
 
-function searchUserByEmail ($email, $users) {
-    foreach ($users as $value) {
-        $result = null;
-        if ($value['email'] === $email) {
-            $result = $value;
-            break;
-        }
-    }
-    return $result;
-};
-
-
 /**
- * Проверяет суествует ли в БД повторяющийся email возвращает boolean
+ * Проверяет существует ли в БД повторяющийся email возвращает boolean
  * @param $connect mysqli ресурс соединения
  * @param $user_email string пользовательсий ввод email
  * @return boolean
@@ -112,12 +118,17 @@ function get_projects ($connect) {
  */
 function get_tasks ($connect, $user_id) {
     $query = '
-    SELECT task, date_deadline, project_name, tasks.user_id, file_link, date_finish FROM tasks 
+    SELECT task, date_deadline, project_name, tasks.user_id, file_link, date_finish, task_id FROM tasks 
     JOIN projects ON projects.project_id = tasks.project_id
     WHERE tasks.user_id = ?;
     ';
     return db_select($connect, $query, [$user_id]);
 }
+
+/**Выводит ошибку БД на страницу
+ * @param $link mysqli
+ * @return int
+ */
 function getSqlError($link) {
     $page_error = mysqli_error($link);
     $error_layout = get_template('error', [
@@ -149,7 +160,7 @@ function get_save_content($content) {
     return htmlentities($content, ENT_QUOTES, "UTF-8");
 }
 
-/** Рекурсивоно проходет по массиву и делает безопасным данные и БД
+/** Рекурсивоно проходет по массиву и делает безопасным данные из БД
  * @param $arr array входящий массив
  * @return array
  */
@@ -173,7 +184,11 @@ function date_now_sql () {
     return date('Y-m-d H:i:s', strtotime("now"));
 }
 
-
+/**Выводит данные пользователя по email
+ * @param $connect mysqli
+ * @param $email string
+ * @return array
+ */
 function get_users_data ($connect, $email) {
     $query = '
         SELECT user_id, user_name FROM users
@@ -181,4 +196,33 @@ function get_users_data ($connect, $email) {
     ';
     return db_select($connect, $query, [$email]);
 
+}
+
+/**Записывает время выполнения для проекта в БД
+ * @param $connect mysqli
+ * @param $date_data string|null
+ * @param $task_id integer
+ * @return array|bool|mysqli_result
+ */
+function update_date_finish ($connect, $date_data, $task_id) {
+    $query = '
+    UPDATE tasks
+    SET date_finish = ?
+    WHERE task_id = ?;
+    ';
+    return db_update($connect, $query, [$date_data, $task_id]);
+}
+
+/** Записывает время выполнения как null
+ * @param $connect mysqli
+ * @param $task_id integer
+ * @return array|bool|mysqli_result
+ */
+function update_date_finish_null ($connect, $task_id) {
+    $query = '
+    UPDATE tasks
+    SET date_finish = NULL
+    WHERE task_id = ?;
+    ';
+    return db_update($connect, $query, [$task_id]);
 }

@@ -1,8 +1,7 @@
 <?php
 require_once('mysql_helper.php');
 
-/**
- * Принимает параметры и возвращает данные из БД в ввиде двумерного массива
+/**Принимает параметры и возвращает данные из БД в ввиде двумерного массива
  * @param $con mysqli ресурс соединения
  * @param $query string SQL запрос с плейсхолдерами вместо значений
  * @param $data array данные для вставки на место плейсхолдеров
@@ -19,6 +18,21 @@ function db_select ($con, $query, $data) {
         return [];
     }
     return get_save_content_for_array(mysqli_fetch_all($result, MYSQLI_ASSOC));
+}
+
+/**Принимает параметры и редактирует запись в БД возвращая после результат операции
+ * @param $con mysqli ресурс соединения
+ * @param $query string SQL запрос с плейсхолдерами вместо значений
+ * @param $data array данные для вставки на место плейсхолдеров
+ * @return array|bool|mysqli_result возвращает статус операции
+ */
+function db_update($con, $query, $data) {
+    $stmt = db_get_prepare_stmt($con, $query, $data);
+    if (!$stmt) {
+        return [];
+    }
+    mysqli_stmt_execute($stmt);
+    return mysqli_stmt_get_result($stmt);
 }
 
 /**Производит вставку в БД

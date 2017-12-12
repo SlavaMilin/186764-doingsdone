@@ -3,7 +3,6 @@ require_once('functions.php');
 require_once ('config/config.php');
 require_once ('init.php');
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
     $get_data = $_POST;
     $required = ['email', 'password', 'user_name'];
@@ -34,5 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
         print($page_register);
     }
 }
+
 $page_register = get_template('register', []);
 print($page_register);
