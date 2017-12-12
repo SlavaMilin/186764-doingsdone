@@ -3,7 +3,7 @@
 
     <h2 class="modal__heading">Вход на сайт</h2>
 
-    <form class="form" action="index.php?action=login" method="post">
+    <form class="form" action="index.php?login" method="post">
         <div class="form__row">
             <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
@@ -11,7 +11,7 @@
             if (isset($errors['email'])) {
                 print('--error');
             }
-            ?>"type="text" name="email" id="email" value="" placeholder="Введите e-mail">
+            ?>"type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {print($get_data['email']);} ?>" placeholder="Введите e-mail">
 
             <?php
                 if (isset($errors['email'])) {

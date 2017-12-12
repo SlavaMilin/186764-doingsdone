@@ -3,13 +3,13 @@
 
     <nav class="main-navigation">
         <ul class="main-navigation__list">
-            <?php foreach ($projects as $key => $value): ?>
-                <li class="main-navigation__list-item <?php if ($key === $category_page) echo 'main-navigation__list-item--active' ?>">
-                    <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $key;?>">
-                        <?= htmlspecialchars($value); ?>
+            <?php foreach ($projects as $value): ?>
+                <li class="main-navigation__list-item <?php if (intval($value['project_id']) === $category_page) echo 'main-navigation__list-item--active' ?>">
+                    <a class="main-navigation__list-item-link" href="<?='/index.php?' . 'category_page=' . $value['project_id'];?>">
+                        <?= htmlspecialchars($value['project_name']); ?>
                     </a>
                     <span class="main-navigation__list-item-count">
-                        <?= htmlspecialchars(get_task_count($tasks, $value)); ?>
+                        <?= htmlspecialchars(get_task_count($tasks, $value['project_name'])); ?>
                     </span>
                 </li>
             <?php endforeach; ?>
@@ -21,7 +21,7 @@
 <main class="content__main">
     <h2 class="content__main-heading">Список задач</h2>
 
-    <form class="search-form" action="index.html" method="post">
+    <form class="search-form" action="index.php" method="post">
         <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
 
         <input class="search-form__submit" type="submit" name="" value="Искать">
@@ -50,24 +50,28 @@
 
     <table class="tasks">
         <?php foreach(show_complete_task(filtering_category_array($tasks, $projects, $category_page)) as $key => $value): ?>
-            <tr class="tasks__item task <?php if ($value['status'] === 'Да') echo 'task--completed'?>">
+            <tr class="tasks__item task <?php isset($value['date_finish']) ? print('task--completed') : print('');?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox">
-                        <a href="/">
+                        <a href="?finish_task=<?=htmlspecialchars($value['task_id']) ?>&key=<?=$key?>">
                         <span class="checkbox__text">
+                            <?php if ($value['task']) :?>
                             <?= htmlspecialchars($value['task']); ?>
+                            <?php endif; ?>
                         </span>
                         </a>
                     </label>
                 </td>
                 <td class="task__file">
-                    <?php if (isset($value['preview']) && !empty($value['preview'])):?>
-                    <a class="download-link" href="#"> <?=htmlspecialchars($value['preview']);?></a>
+                    <?php if ($value['file_link']):?>
+                        <a class="download-link" href="<?=htmlspecialchars(UPLOAD_DIR_PATH . $value['file_link']);?>"> <?=htmlspecialchars($value['file_link']);?></a>
                     <?php endif;?>
                 </td>
                 <td class="task__date">
-                    <?= htmlspecialchars($value['date']); ?>
+                    <?php if ($value['date_deadline']) : ?>
+                        <?= htmlspecialchars(date('d.m.Y', strtotime($value['date_deadline']))); ?>
+                    <? endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

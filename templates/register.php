@@ -3,44 +3,72 @@
 
 <head>
     <meta charset="UTF-8">
-    <title><?=htmlspecialchars($title);?></title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body class="<?php
-    if(isset($_GET['form']) || isset($_GET['login'])) {
-        echo 'overlay';
-    };
-?>">
+<body>
 <h1 class="visually-hidden">Дела в порядке</h1>
 
 <div class="page-wrapper">
     <div class="container container--with-sidebar">
         <header class="main-header">
             <a href="#">
-                <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
+                <img src="../img/logo.png" width="153" height="42" alt="Логитип Дела в порядке">
             </a>
-
-            <div class="main-header__side">
-                <a class="main-header__side-item button button--plus" href="index.php?form">Добавить задачу</a>
-
-                <div class="main-header__side-item user-menu">
-                    <div class="user-menu__image">
-                        <img src="img/user-pic.jpg" width="40" height="40" alt="Пользователь">
-                    </div>
-
-                    <div class="user-menu__data">
-                        <p><?=htmlspecialchars($user_name);?></p>
-
-                        <a href="logout.php">Выйти</a>
-                    </div>
-                </div>
-            </div>
         </header>
 
         <div class="content">
-            <?=$content;?>
+            <section class="content__side">
+                <p class="content__side-info">Если у вас уже есть аккаунт, авторизуйтесь на сайте</p>
+
+                <a class="button button--transparent content__side-button" href="/?login">Войти</a>
+            </section>
+
+            <main class="content__main">
+                <h2 class="content__main-heading">Регистрация аккаунта</h2>
+
+                <form class="form" action="?register" method="post">
+                    <div class="form__row">
+                        <label class="form__label" for="email">E-mail <sup>*</sup></label>
+
+                        <input class="form__input <?php if(isset($error['email'])) {print('form__input--error');} ?>" type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {
+                            print(htmlspecialchars($get_data['email']));
+                        }?>" placeholder="Введите e-mail">
+                        <?php if (isset($error['email'])):?>
+                        <p class="form__message">E-mail введён некорректно</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form__row">
+                        <label class="form__label" for="password">Пароль <sup>*</sup></label>
+
+                        <input class="form__input <?php if(isset($error['password'])) {print('form__input--error');} ?>" type="password" name="password" id="password" value="" placeholder="Введите пароль">
+                        <?php if (isset($error['password'])):?>
+                            <p class="form__message">Пароль введён некорректно</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form__row">
+                        <label class="form__label" for="user_name">Имя <sup>*</sup></label>
+
+                        <input class="form__input <?php if(isset($error['user_name'])) {print('form__input--error');} ?>" type="text" name="user_name" id="user_name" value="<?php if (isset($get_data['user_name'])) {
+                            print(htmlspecialchars($get_data['user_name']));
+                        }?>" placeholder="Введите имя">
+                        <?php if (isset($error['user_name'])):?>
+                            <p class="form__message">Имя введёно некорректно</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form__row form__row--controls">
+                        <?php if (isset($error)): ?>
+                        <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
+                        <?php endif; ?>
+                        <input class="button" type="submit" name="" value="Зарегистрироваться">
+                    </div>
+                </form>
+            </main>
         </div>
     </div>
 </div>
@@ -78,14 +106,10 @@
             <span class="visually-hidden">Разработано:</span>
 
             <a href="https://htmlacademy.ru/intensive/php">
-                <img src="img/htmlacademy.svg" alt="HTML Academy" width="118" height="40">
+                <img src="../img/htmlacademy.svg" alt="HTML Academy" width="118" height="40">
             </a>
         </div>
     </div>
 </footer>
-
-<?=$modal_form; ?>
-<?=$modal_login; ?>
-
 </body>
 </html>

@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS users (
 	contacts_data VARCHAR(128)
 ) ENGINE = INNODB CHARACTER SET = utf8;
 
-CREATE UNIQUE INDEX user_name ON users(user_name);
 CREATE UNIQUE INDEX email ON users(email);
 
 CREATE INDEX name_index ON users(user_name);

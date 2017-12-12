@@ -29,7 +29,7 @@ UPDATE tasks
 WHERE task_id = 5;
 # получить все задачи для завтрашнего дня
 SELECT task FROM tasks
-WHERE date_deadline = "2017-12-07 00:00:00"
+WHERE date_deadline BETWEEN "2017-12-07 00:00:00" AND "2017-12-07 23:59:59";
 # обновить название задачи по её идентификатору
 UPDATE tasks
 SET task = "Погулять с собакой"

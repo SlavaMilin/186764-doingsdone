@@ -9,7 +9,7 @@
 </head>
 
 <body class="body-background <?php
-if($add_login) {
+if(isset($_GET['login'])) {
     echo 'overlay';
 };
 ?>">
@@ -23,7 +23,7 @@ if($add_login) {
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--transparent" href="?login">Войти</a>
+                <a class="main-header__side-item button button--transparent" href="index.php?login">Войти</a>
             </div>
         </header>
 
@@ -37,7 +37,7 @@ if($add_login) {
                     <p>После создания аккаунта, пользователь может начать вносить свои дела, деля их по проектам и указывая сроки.</p>
                 </div>
 
-                <a class="welcome__button button" href="#">Зарегистрироваться</a>
+                <a class="welcome__button button" href="/register.php">Зарегистрироваться</a>
             </section>
         </div>
     </div>
@@ -81,7 +81,8 @@ if($add_login) {
         </div>
     </div>
 </footer>
-
-<?=$modal_login; ?>
+<?php if (isset($_GET['login'])): ?>
+    <?=$modal_login; ?>
+<? endif;?>
 </body>
 </html>

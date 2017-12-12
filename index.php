@@ -1,21 +1,16 @@
 <?php
-session_start();
-
-define('SECONDS_IN_DAY', 86400);
-define('TEMPLATE_DIR_PATH', 'templates/');
-define('UPLOAD_DIR_PATH', 'uploads/');
-define('TEMPLATE_EXT', '.php');
-define('HOST_NAME', 'http://doingsdone/');
-require_once('functions.php');
-require_once('data.php');
-require_once ('userdata.php');
+require_once('config/config.php');
+require_once ('functions.php');
 require_once ('init.php');
 
-$category_page = 0;
-$add_form = null;
-$add_login = null;
+$category_page = 1;
 $modal_form = '';
 $modal_login = '';
+
+
+$projects = get_projects($db_connect);
+$tasks = get_tasks($db_connect, $_SESSION['user_id']);
+
 
 //Считывает параметр запроса category_page и передаёт её параметр для переключения категорий
 
@@ -25,70 +20,64 @@ if (isset($_GET['category_page'])) {
 
 //Включает отображение попапа формы при параметре запроса get=form
 
-if (isset($_GET['add'])) {
-    if ($_GET['add'] === 'form') {
-        $add_form = true;
-        $modal_form = get_template('form', [
-            'projects' => $projects,
-        ]);
-    }
+if (isset($_GET['form']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $modal_form = get_template('form', [
+        'projects' => $projects,
+    ]);
 };
 
 //Включает отображение попапа логина при параметре запроса get=login
 
-if (isset($_GET['login'])) {
-    $add_login = true;
+if (isset($_GET['login']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $modal_login = get_template('login', []);
 }
 
 //При получении данных из формы производит валидацию. Если проходит валидацию добавляет задачу, если нет выводит ошибки
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'form') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
     $get_data = $_POST;
-    $errors = [];
-    $required = ['task', 'category'];
-    foreach ($required as $value) {
-        if (!array_key_exists($value, $get_data) || empty($get_data[$value])) {
-            $errors[$value] = true;
-        }
-    }
-    if (isset($_FILES['preview']['name']) && empty($errors)) {
-        $path = $_FILES['preview']['name'];
-        $res = move_uploaded_file($_FILES['preview']['tmp_name'], UPLOAD_DIR_PATH . $path);
-        $get_data['preview'] = $path;
+    $required = ['task', 'project_id'];
+    $errors = validateForm($get_data, $required);
+
+    if (isset($_FILES['file_link']['name']) && empty($errors)) {
+        $path = $_FILES['file_link']['name'];
+        $res = move_uploaded_file($_FILES['file_link']['tmp_name'], UPLOAD_DIR_PATH . $path);
+        $get_data['file_link'] = $path;
     }
     if (!empty($errors)) {
-        $add_form = true;
         $modal_form = get_template('form', [
             'get_data' => $get_data,
             'errors' => $errors,
             'projects' => $projects,
         ]);
     } else {
-        $get_data['status'] = 'Нет';
-        if (empty($get_data['date'])) {
-            $get_data['date'] = 'Нет';
+        if (empty($get_data['date_deadline'])) {
+            $get_data['date_deadline'] = NULL;
         } else {
-            $get_data['date'] = date_format(date_create($get_data['date']), 'd.m.Y');
+            $get_data['date_deadline'] = date_format(date_create($get_data['date_deadline']), 'Y-m-d H:i:s');
         }
-        array_unshift($tasks, $get_data);
+        $get_data['date_start'] = date_now_sql();
+        $get_data['user_id'] = $_SESSION['user_id'];
+        $get_data['project_id'] = (int) $get_data['project_id'];
+        db_insert($db_connect, 'tasks', $get_data);
+        header('Location: index.php');
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'login') {
-    $get_data = $_POST;
-    $errors = [];
-    $required = ['email', 'password'];
+//Валидирует данные авторизации и открывает сессию после входа
 
-    foreach ($required as $value) {
-        if (!array_key_exists($value, $get_data) || empty($get_data[$value])) {
-            $errors[$value] = true;
-        }
-    }
-    $user = searchUserByEmail($get_data['email'], $users);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['login'])) {
+    $get_data = $_POST;
+    $required = ['email', 'password'];
+    $errors = validateForm($get_data, $required);
+    $user = check_exist_email($db_connect, $get_data['email']);
+
     if ($user) {
-        if (password_verify($get_data['password'], $user['password'])) {
-            $_SESSION['user'] = $user;
+        if (check_password($db_connect, $get_data['email'], $get_data['password'])) {
+            $user_data = get_users_data($db_connect, $get_data['email']);
+            $_SESSION['user'] = $get_data['email'];
+            $_SESSION['user_id'] = $user_data[0]['user_id'];
+            $_SESSION['user_name'] = $user_data[0]['user_name'];
         } else {
             $errors['password'] = true;
         }
@@ -99,9 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'login') {
     if (empty($errors)) {
         header('Location: index.php');
     } else {
-        $add_login = true;
         $modal_login = get_template('login', [
             'errors' => $errors,
+            'get_data' => $get_data
         ]);
     }
 }
@@ -114,17 +103,20 @@ if (isset($_GET['show_completed'])) {
     header('Location: /');
 };
 
-// устанавливаем часовой пояс в Московское время
-date_default_timezone_set('Europe/Moscow');
+if (isset($_GET['finish_task']) && isset($_GET['key'])) {
+    $num_task = (int) $_GET['finish_task'];
+    $key = (int) $_GET['key'];
 
-$days = rand(-3, 3);
-$task_deadline_ts = strtotime("+" . $days . " day midnight"); // метка времени даты выполнения задачи
-$current_ts = strtotime('now midnight'); // текущая метка времени
+    if ($tasks[$key]['date_finish'] === null) {
+        $result = update_date_finish($db_connect, date_now_sql(), $num_task);
+        header('Location: index.php');
+    } else {
+        $result = update_date_finish_null($db_connect, $num_task);
+        header('Location: /');
+    }
+}
 
-// запишите сюда дату выполнения задачи в формате дд.мм.гггг
-$date_deadline = date('d.m.Y', $task_deadline_ts);
-// в эту переменную запишите кол-во дней до даты задачи
-$days_until_deadline = floor((strtotime($date_deadline) - $current_ts) / SECONDS_IN_DAY);
+//выводет отображение страниц для пользователя или гостя
 
 if (isset($_SESSION['user'])) {
     $page_content = get_template('index', [
@@ -135,16 +127,14 @@ if (isset($_SESSION['user'])) {
     $layout_content = get_template('layout', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
+        'user_name' => $_SESSION['user_name'],
         'modal_form' => $modal_form,
-        'modal_login' => $modal_login,
-        'add_form' => $add_form,
-        'add_login' => $add_login
+        'modal_login' => $modal_login
     ]);
     print($layout_content);
 } else {
     $page_content = get_template('guest', [
-        'modal_login' => $modal_login,
-        'add_login' => $add_login
+        'modal_login' => $modal_login
     ]);
     print($page_content);
 }
