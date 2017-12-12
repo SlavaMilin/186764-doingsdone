@@ -110,12 +110,13 @@ function get_projects ($connect) {
  * @param $connect mysqli ресурс соединения
  * @return array
  */
-function get_tasks ($connect) {
+function get_tasks ($connect, $user_id) {
     $query = '
-    SELECT task, date_deadline, project_name FROM tasks 
-    JOIN projects ON projects.project_id = tasks.project_id;
+    SELECT task, date_deadline, project_name, tasks.user_id, file_link, date_finish FROM tasks 
+    JOIN projects ON projects.project_id = tasks.project_id
+    WHERE tasks.user_id = ?;
     ';
-    return db_select($connect, $query, []);
+    return db_select($connect, $query, [$user_id]);
 }
 function getSqlError($link) {
     $page_error = mysqli_error($link);
@@ -170,4 +171,14 @@ function get_save_content_for_array($arr) {
  */
 function date_now_sql () {
     return date('Y-m-d H:i:s', strtotime("now"));
+}
+
+
+function get_users_data ($connect, $email) {
+    $query = '
+        SELECT user_id FROM users
+        WHERE email = ?
+    ';
+    return db_select($connect, $query, [$email]);
+
 }

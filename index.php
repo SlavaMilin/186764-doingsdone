@@ -8,7 +8,8 @@ $modal_form = '';
 $modal_login = '';
 
 $projects = get_projects($db_connect);
-$tasks = get_tasks($db_connect);
+$tasks = get_tasks($db_connect, $_SESSION['user_id']);
+
 
 //Считывает параметр запроса category_page и передаёт её параметр для переключения категорий
 
@@ -34,13 +35,13 @@ if (isset($_GET['login']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
     $get_data = $_POST;
-    $required = ['task', 'category'];
+    $required = ['task', 'project_id'];
     $errors = validateForm($get_data, $required);
 
-    if (isset($_FILES['preview']['name']) && empty($errors)) {
-        $path = $_FILES['preview']['name'];
-        $res = move_uploaded_file($_FILES['preview']['tmp_name'], UPLOAD_DIR_PATH . $path);
-        $get_data['preview'] = $path;
+    if (isset($_FILES['file_link']['name']) && empty($errors)) {
+        $path = $_FILES['file_link']['name'];
+        $res = move_uploaded_file($_FILES['file_link']['tmp_name'], UPLOAD_DIR_PATH . $path);
+        $get_data['file_link'] = $path;
     }
     if (!empty($errors)) {
         $modal_form = get_template('form', [
@@ -49,14 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['form'])) {
             'projects' => $projects,
         ]);
     } else {
-        $get_data['status'] = 'Нет';
         if (empty($get_data['date_deadline'])) {
             $get_data['date_deadline'] = NULL;
         } else {
-            $get_data['date_deadline'] = date_format(date_create($get_data['date_deadline']), 'Y-m-d');
+            $get_data['date_deadline'] = date_format(date_create($get_data['date_deadline']), 'Y-m-d H:i:s');
         }
         $get_data['date_start'] = date_now_sql();
-//        db_insert($db_connect, 'tasks', $get_data);
+        $get_data['user_id'] = $_SESSION['user_id'];
+        $get_data['project_id'] = (int) $get_data['project_id'];
+        db_insert($db_connect, 'tasks', $get_data);
+        header('Location: index.php');
     }
 }
 
@@ -69,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['login'])) {
     if ($user) {
         if (check_password($db_connect, $get_data['email'], $get_data['password'])) {
             $_SESSION['user'] = $get_data['email'];
+            $_SESSION['user_id'] = get_users_data($db_connect, $_SESSION['user'])[0]['user_id'];
         } else {
             $errors['password'] = true;
         }

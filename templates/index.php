@@ -65,7 +65,7 @@
                 </td>
                 <td class="task__file">
                     <?php if ($value['file_link']):?>
-                        <a class="download-link" href="#"> <?=htmlspecialchars($value['file_link']);?></a>
+                        <a class="download-link" href="<?=htmlspecialchars(UPLOAD_DIR_PATH . $value['file_link']);?>"> <?=htmlspecialchars($value['file_link']);?></a>
                     <?php endif;?>
                 </td>
                 <td class="task__date">

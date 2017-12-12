@@ -11,26 +11,26 @@
         </div>
 
         <div class="form__row">
-            <label class="form__label" for="category">Проект <sup>*</sup></label>
-            <?php if (isset($errors['category'])) {echo '<p class="form__message">Заполните это поле</p>';}?>
-            <select class="form__input form__input--select <?php if (isset($errors['category'])) {echo 'form__input--error';};?>" name="category" id="category">
+            <label class="form__label" for="project_id">Проект <sup>*</sup></label>
+            <?php if (isset($errors['project_id'])) {echo '<p class="form__message">Заполните это поле</p>';}?>
+            <select class="form__input form__input--select <?php if (isset($errors['project_id'])) {echo 'form__input--error';};?>" name="project_id" id="project_id">
                 <?php foreach ($projects as $key => $value): ?>
                 <?php if ($key === 0) {continue;}; ?>
-                <option value="<?=$value['project_name']; ?>"><?=$value['project_name']; ?></option>
+                <option value="<?=$value['project_id']; ?>"><?=$value['project_name']; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
 
         <div class="form__row">
             <label class="form__label" for="date">Дата выполнения</label>
-            <input class="form__input form__input--date" type="date" name="date" id="date" value="<?php if (isset($get_data)) echo $get_data['date'];?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
+            <input class="form__input form__input--date" type="date" name="date_deadline" id="date" value="<?php if (isset($get_data)) echo $get_data['date'];?>" placeholder="Введите дату в формате ДД.ММ.ГГГГ">
         </div>
 
         <div class="form__row">
             <label class="form__label" for="preview">Файл</label>
 
             <div class="form__input-file">
-                <input class="visually-hidden" type="file" name="preview" id="preview" value="">
+                <input class="visually-hidden" type="file" name="file_link" id="preview" value="">
 
                 <label class="button button--transparent" for="preview">
                     <span>Выберите файл</span>

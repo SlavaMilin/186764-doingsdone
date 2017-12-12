@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 	date_finish DATETIME,
 	date_deadline DATETIME,
 	file_link VARCHAR(128),
-	status TINYINT,
 	user_id INT,
 	project_id INT NOT NULL
 ) ENGINE = INNODB CHARACTER SET=utf8;
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS users (
 	contacts_data VARCHAR(128)
 ) ENGINE = INNODB CHARACTER SET = utf8;
 
-CREATE UNIQUE INDEX user_name ON users(user_name);
 CREATE UNIQUE INDEX email ON users(email);
 
 CREATE INDEX name_index ON users(user_name);
