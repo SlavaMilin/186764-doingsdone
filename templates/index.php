@@ -29,10 +29,10 @@
 
     <div class="tasks-controls">
         <nav class="tasks-switch">
-            <a href="?all_task" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-            <a href="?today_task" class="tasks-switch__item">Повестка дня</a>
-            <a href="?tomorrow_task" class="tasks-switch__item">Завтра</a>
-            <a href="?ended_task" class="tasks-switch__item">Просроченные</a>
+            <a href="?all_task" class="tasks-switch__item <?php isset($_GET['all_task']) ? print('tasks-switch__item--active') : print('');?>">Все задачи</a>
+            <a href="?today_task" class="tasks-switch__item <?php isset($_GET['today_task']) ? print('tasks-switch__item--active') : print('');?>">Повестка дня</a>
+            <a href="?tomorrow_task" class="tasks-switch__item <?php isset($_GET['tomorrow_task']) ? print('tasks-switch__item--active') : print('');?>">Завтра</a>
+            <a href="?ended_task" class="tasks-switch__item <?php isset($_GET['ended_task']) ? print('tasks-switch__item--active') : print('');?>">Просроченные</a>
         </nav>
 
         <label class="checkbox">
