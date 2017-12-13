@@ -10,8 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
     if (isset($get_data['email'])) {
         $duplicate = check_exist_email($db_connect, $get_data['email']);
         $correct_email = filter_var($get_data['email'],FILTER_VALIDATE_EMAIL);
-        if ($duplicate || !$correct_email) {
+        if (!$correct_email) {
             $error['email'] = true;
+        }
+        if ($duplicate) {
+            $error['email_duplicate'] = true;
         }
     }
     if (empty($error)) {
