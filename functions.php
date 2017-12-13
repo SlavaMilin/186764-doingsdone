@@ -24,11 +24,11 @@ function get_template($file_way, $data) {
  */
 function get_task_count($tasks, $category_item) {
     $count = 0;
-    if ($category_item === 'Все') {
+    if ($category_item === 1) {
         return count($tasks);
     }
     foreach ($tasks as $item) {
-        if ($category_item === $item['project_name']) {
+        if ($category_item === $item['project_id']) {
             $count += 1;
         };
     };
@@ -48,7 +48,7 @@ function filtering_category_array(array $get_tasks, array $get_projects, $page_l
     };
     if (array_key_exists(intval($page_link - 1), $get_projects)) {
         foreach ($get_tasks as $value) {
-            if ($value['project_name'] === $get_projects[$page_link - 1]['project_name']) {
+            if ($value['project_id'] === $get_projects[$page_link - 1]['project_id']) {
                 array_push($result, $value);
             }
         };
@@ -114,13 +114,13 @@ function get_projects ($connect) {
 
 /** Возвращает данные для задач из БД
  * @param $connect mysqli ресурс соединения
+ * @param $user_id integer id пользователя
  * @return array
  */
 function get_tasks ($connect, $user_id) {
     $query = '
-    SELECT task, date_deadline, project_name, tasks.user_id, file_link, date_finish, task_id FROM tasks 
-    JOIN projects ON projects.project_id = tasks.project_id
-    WHERE tasks.user_id = ?;
+    SELECT task, date_deadline, user_id, project_id, file_link, date_finish, task_id FROM tasks
+    WHERE user_id = ?;
     ';
     return db_select($connect, $query, [$user_id]);
 }
@@ -225,4 +225,44 @@ function update_date_finish_null ($connect, $task_id) {
     WHERE task_id = ?;
     ';
     return db_update($connect, $query, [$task_id]);
+}
+
+/** Проверяет есть ли такая категория в переданных данных
+ * @param $array array
+ * @param $project_id integer
+ * @return bool
+ */
+function check_exist_project ($array, $project_id) {
+    $result = false;
+    foreach ($array as $value) {
+        if ($value['project_id'] === $project_id) {
+            $result = true;
+            break;
+        }
+    }
+    return $result;
+}
+
+
+/** Возвращает данные для задач из БД
+ * @param $connect mysqli ресурс соединения
+ * @param $user_id integer id пользователя
+ * @return array
+ */
+function filtred_day_tasks ($connect, $user_id, $day) {
+    $query = '
+    SELECT task, date_deadline, user_id, project_id, file_link, date_finish, task_id FROM tasks
+    WHERE user_id = ? 
+    AND date_deadline = ?;
+    ';
+    return db_select($connect, $query, [$user_id, $day]);
+}
+function filtred_delay_tasks ($connect, $user_id, $day) {
+    $query = '
+    SELECT task, date_deadline, user_id, project_id, file_link, date_finish, task_id FROM tasks
+    WHERE user_id = ? 
+    AND date_deadline < ?
+    AND date_finish IS NULL;
+    ';
+    return db_select($connect, $query, [$user_id, $day]);
 }

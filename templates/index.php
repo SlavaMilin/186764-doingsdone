@@ -9,14 +9,14 @@
                         <?= htmlspecialchars($value['project_name']); ?>
                     </a>
                     <span class="main-navigation__list-item-count">
-                        <?= htmlspecialchars(get_task_count($tasks, $value['project_name'])); ?>
+                        <?= htmlspecialchars(get_task_count($tasks, $value['project_id'])); ?>
                     </span>
                 </li>
             <?php endforeach; ?>
         </ul>
     </nav>
 
-    <a class="button button--transparent button--plus content__side-button" href="#">Добавить проект</a>
+    <a class="button button--transparent button--plus content__side-button" href="?project">Добавить проект</a>
 </section>
 <main class="content__main">
     <h2 class="content__main-heading">Список задач</h2>
@@ -29,10 +29,10 @@
 
     <div class="tasks-controls">
         <nav class="tasks-switch">
-            <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-            <a href="/" class="tasks-switch__item">Повестка дня</a>
-            <a href="/" class="tasks-switch__item">Завтра</a>
-            <a href="/" class="tasks-switch__item">Просроченные</a>
+            <a href="?all_task" class="tasks-switch__item <?php isset($_GET['all_task']) ? print('tasks-switch__item--active') : print('');?>">Все задачи</a>
+            <a href="?today_task" class="tasks-switch__item <?php isset($_GET['today_task']) ? print('tasks-switch__item--active') : print('');?>">Повестка дня</a>
+            <a href="?tomorrow_task" class="tasks-switch__item <?php isset($_GET['tomorrow_task']) ? print('tasks-switch__item--active') : print('');?>">Завтра</a>
+            <a href="?ended_task" class="tasks-switch__item <?php isset($_GET['ended_task']) ? print('tasks-switch__item--active') : print('');?>">Просроченные</a>
         </nav>
 
         <label class="checkbox">

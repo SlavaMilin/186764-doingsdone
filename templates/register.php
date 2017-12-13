@@ -33,11 +33,14 @@
                     <div class="form__row">
                         <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
-                        <input class="form__input <?php if(isset($error['email'])) {print('form__input--error');} ?>" type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {
+                        <input class="form__input <?php if(isset($error['email']) || isset($error['email_duplicate'])) {print('form__input--error');} ?>" type="text" name="email" id="email" value="<?php if (isset($get_data['email'])) {
                             print(htmlspecialchars($get_data['email']));
                         }?>" placeholder="Введите e-mail">
                         <?php if (isset($error['email'])):?>
                         <p class="form__message">E-mail введён некорректно</p>
+                        <?php endif; ?>
+                        <?php if (isset($error['email_duplicate'])):?>
+                            <p class="form__message">Пользователь с таким E-mail уже существует</p>
                         <?php endif; ?>
                     </div>
 

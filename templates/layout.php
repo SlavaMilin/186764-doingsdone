@@ -9,7 +9,7 @@
 </head>
 
 <body class="<?php
-    if(isset($_GET['form']) || isset($_GET['login'])) {
+    if(isset($_GET['form']) || isset($_GET['login']) || isset($_GET['project'])) {
         echo 'overlay';
     };
 ?>">
@@ -85,6 +85,7 @@
 </footer>
 
 <?=$modal_form; ?>
+<?=$modal_project;?>
 <?=$modal_login; ?>
 
 </body>
